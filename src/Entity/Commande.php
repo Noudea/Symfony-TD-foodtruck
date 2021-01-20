@@ -7,7 +7,7 @@ namespace App\Entity;
 class Commande
 {
     private $id;
-    /** @var \DateTime */
+    /** @var ?\DateTime */
     private $dateDeCommande;
     /** @var FoodTruck */
     private $foodTruck;
@@ -15,7 +15,7 @@ class Commande
     private $menu;
     /** @var string */
     private $client;
-    /** @var \DateTime */
+    /** @var ?\DateTime */
     private $dateDeRetrait;
 
     /**
@@ -38,18 +38,18 @@ class Commande
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTime
      */
-    public function getDateDeCommande(): \DateTime
+    public function getDateDeCommande(): ?\DateTime
     {
         return $this->dateDeCommande;
     }
 
     /**
-     * @param \DateTime $dateDeCommande
+     * @param ?\DateTime $dateDeCommande
      * @return Commande
      */
-    public function setDateDeCommande(\DateTime $dateDeCommande): Commande
+    public function setDateDeCommande(?\DateTime $dateDeCommande): Commande
     {
         $this->dateDeCommande = $dateDeCommande;
 
@@ -114,18 +114,18 @@ class Commande
     }
 
     /**
-     * @return \DateTime
+     * @return ?\DateTime
      */
-    public function getDateDeRetrait(): \DateTime
+    public function getDateDeRetrait(): ?\DateTime
     {
         return $this->dateDeRetrait;
     }
 
     /**
-     * @param \DateTime $dateDeRetrait
+     * @param ?\DateTime $dateDeRetrait
      * @return Commande
      */
-    public function setDateDeRetrait(\DateTime $dateDeRetrait): Commande
+    public function setDateDeRetrait(?\DateTime $dateDeRetrait): Commande
     {
         $this->dateDeRetrait = $dateDeRetrait;
 

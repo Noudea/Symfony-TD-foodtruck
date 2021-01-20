@@ -131,5 +131,18 @@ private function getCommande($id)
     }
     throw new Exception('Commande inconnue');
 }
+
+private function deleteCommande($id)
+{
+
+    foreach ($this->commandes as $key => $commande) {
+        if($commande->getId() == $id){
+            unset($this->commandes[$key]);
+            return true;
+        }
+    }
+    return false;
+    // throw new Exception('Commande inconnue');
+}
 }
 
