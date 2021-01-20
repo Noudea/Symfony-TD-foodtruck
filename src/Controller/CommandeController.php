@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -20,19 +21,53 @@ class CommandeController extends AbstractController
     {
         $this->init();;
     }
+
     /**
-     * @Route("/", name="command_main")
+     * @Route("/{id}", name="command_get", methods={"GET"})
      */
-    public function index(Request $request)
+    public function index($id = '')
+
     {
-        $client = $request->query->get('client');
+        if (!empty($id)) {
+            try {
+                $commande = $this->getCommande($id);
+            } catch (Exception $e) {
+                throw new BadRequestHttpException();
+            }
+        }
+        if (empty($commande)) {
+            // On renvoie la liste de tous les food trucks.
+            return $this->json($this->toArray($this->commandes));
+        }
+        // On renvoie le food truck demandé
+        return $this->json($commande->toArray());
+    }
+    /**
+     * @param Commande[] $commandes
+     * @return array
+     */
+    private function toArray($commandes)
+    {
+        $commandesArray = [];
+        foreach ($commandes as $commande) {
+            $commandesArray[] = $commande->toArray();
+        }
+        return $commandesArray;
+    }
+
+    /**
+     * @Route("/", name="commande_create", methods={"POST"})
+     */
+    public function create(Request $request)
+    {
+        $client = $request->get('client');
         if (empty($client)) {
             throw new BadRequestHttpException('il manque le nom du client');
         }
         try {
-            $foodtruckId = $request->query->get('foodtruck');
+            $foodtruckId = $request->get('foodtruck');
             $foodtruck = $this->getFoodTruck($foodtruckId);
-            $menuId = $request->query->get('menu');
+            $menuId = $request->get('menu');
             $menu = $this->getMenu($menuId);
         } catch (Exception $e) {
             throw new BadRequestHttpException('Les identifiants ne correspondent pas à des ressources connues');
@@ -47,21 +82,23 @@ class CommandeController extends AbstractController
         }
         $commande = null;
         if ($menuOk) {
+            $id = rand(10, 10000);
             $commande = new Commande();
             $commande
-                ->setId(1)
-                ->setDateDeCommande(new \DateTime())
-                ->setFoodTruck($foodtruck)
-                ->setMenu($menu)
-                ->setClient($client);
+            ->setId($id)
+            ->setDateDeCommande(new \DateTime())
+            ->setFoodTruck($foodtruck)
+            ->setMenu($menu)
+            ->setClient($client);
             return $this->json(
-                $commande->toArray()
+                $commande->toArray(),
+
+                Response::HTTP_CREATED, // On indique qu'on a une nouvelle resource,
+                ['Location' => '/commande/' . $id]
             );
         } else {
             $message = "Nous ne pouvons pas accepter votre commande";
-            return $this->json([
-                'message' => $message,
-            ]);
+            throw new UnprocessableEntityHttpException($message);
         }
     }
 }

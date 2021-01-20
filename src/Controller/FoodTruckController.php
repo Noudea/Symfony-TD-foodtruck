@@ -18,7 +18,7 @@ class FoodTruckController extends AbstractController
         $this->init();;
     }
     /**
-     * @Route("/{id}", name="food_truck_main")
+     * @Route("/{id}", name="food_truck_main", methods={"GET"})
      */
     public function index($id = '')
     {

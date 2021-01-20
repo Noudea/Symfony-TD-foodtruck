@@ -17,6 +17,8 @@ private $foodTrucks;
 * @var Menu[]
 */
 private $menus;
+private $commandes;
+
 private function init()
 {
 $foodTruck1 = new FoodTruck();
@@ -119,4 +121,15 @@ return $menu;
 }
 throw new Exception('Menu inconnu');
 }
+
+private function getCommande($id)
+{
+    foreach ($this->commandes as $commande) {
+        if ($commande->getId() == $id) {
+            return $commande;
+        }
+    }
+    throw new Exception('Commande inconnue');
 }
+}
+
